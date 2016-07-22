@@ -10,9 +10,14 @@ RSpec.describe Courier::SnsPublisher, type: :model do
 
   before { publisher.logger = logger_double }
 
+  describe '#sns_client' do
+    it 'defaults to a new AWS::SNS::Client' do
+      expect(publisher.sns_client).to be_an_instance_of(Aws::SNS::Client)
+    end
+  end
 
   describe '#publish to :new_donation' do
-    let(:sns_client_double) { double('AWS::SNS::Client', :publish => true) }
+    let(:sns_client_double) { double('Aws::SNS::Client', :publish => true) }
     before { publisher.sns_client = sns_client_double }
 
     it 'sends :publish to #sns_client with the topic ARN and message' do
