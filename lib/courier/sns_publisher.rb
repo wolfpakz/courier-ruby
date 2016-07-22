@@ -2,12 +2,13 @@ require 'aws-sdk'
 
 module Courier
   class SnsPublisher
-    attr_accessor :sns_config, :sns_client
+    attr_accessor :sns_config, :sns_client, :region
 
     include Logging
 
-    def initialize(sns_config)
+    def initialize(sns_config, region: 'us-east-1')
       @sns_config = sns_config
+      @region = region
     end
 
     def publish(topic, message)
@@ -19,7 +20,7 @@ module Courier
     end
 
     def sns_client
-      @sns_client ||= ::AWS::SNS::Client.new
+      @sns_client ||= ::Aws::SNS::Client.new(region: region)
     end
 
     private
@@ -28,7 +29,7 @@ module Courier
     end
 
     def topic_error(topic)
-      Courier::NotConfigured.new "AWS SNS topic \"#{topic}\" is not configured"
+      Courier::NotConfigured.new "SNS topic \"#{topic}\" is not configured"
     end
   end
 end
